@@ -112,6 +112,7 @@ logs.list({
 	],
 	title: ['List 说明'],
 	align: ['center', 'left'],
+	whiteSpace: 'normal',
 	width: [15, 45]
 }).head({
 	title: {

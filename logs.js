@@ -58,6 +58,20 @@ const logs = {
 			return /^(left|center|right|justify)$/.test(align) ? align : 'left';
 		}
 
+		// if (obj.whiteSpace && obj.whiteSpace === 'normal') {
+		// 	console.log(obj.content);
+
+		// 	let ss = [];
+
+		// 	for (let i of obj.content) {
+		// 		for (let ii of i) {
+		// 			if (typeof width === 'object') {
+						
+		// 			}
+		// 		}
+		// 	}
+		// }
+
 		if (typeof width === 'number') {
 			// 单元格宽度
 			listWidth  = Math.floor(width / colspan);
