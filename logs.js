@@ -5,7 +5,6 @@
 */
 
 const logs = {
-	outHTML : [],
 
 	head : function(obj) {
 		obj.width = obj.width || 20;
@@ -26,8 +25,7 @@ const logs = {
 			obj.title.decoration = obj.title.decoration || "inset";
 		}
 
-		// console.log(obj);
-		this.outHTML.push( output (obj) )
+		console.log( output (obj) )
 
 		return this;
 
@@ -89,7 +87,7 @@ const logs = {
 
 					titleStr += positionStr(textOverflow(val), _align, '', listWidth)
 				}
-				html += '\n' + titleStr;
+				html += titleStr;
 			}
 
 			// 列表
@@ -97,6 +95,9 @@ const logs = {
 				let listHTML = '\n';
 
 				for (let l of obj.content) {
+					if (l !== obj.content[0]) 
+						listHTML += '\n';
+
 					// 列数 = 标题的个数 或 自己的长度
 					// let steps = !obj.title ? l.length : obj.title.length;
 					for (let i = 0; i < colspan; i++) {
@@ -123,21 +124,15 @@ const logs = {
 
 						listHTML += positionStr( textOverflow(val, listWidth), _align, '', listWidth);
 					}
-					listHTML += '\n';
+					
 				}
 
 				html += listHTML;
 			}
 		}
 
-		this.outHTML.push(html)
+		console.log(html)
 		return this;
-	},
-
-	show: function() {
-		console.log(this.outHTML.join(''))
-
-		this.outHTML = []
 	}
 }
 
