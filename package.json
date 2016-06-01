@@ -1,0 +1,14 @@
+{
+	"name": "zlogs",
+	"version": "0.0.1",
+	"description": "log格式化",
+	"main": "logs.js",
+	"keywords": [
+		"log格式化","nodejs", "log", "console", "iojs"
+	],
+	"author": {
+		"name": "ektx",
+		"email": "530675800@qq.com"
+	},
+	"license": "MIT"
+}
