@@ -43,6 +43,7 @@ const logs = {
 		title: ['List 说明'],
 		align: 'center',
 		width: 60,
+		whiteSpace: 'nowrap',
 		colspan: 2
 	})
 	*/
@@ -53,30 +54,30 @@ const logs = {
 		// 行数
 		let colspan = obj.colspan || 2;
 		let listWidth = remainderVal = 0;
+		// 默认为换行，可选择 nowrap 不换行 
+		obj.whiteSpace = obj.whiteSpace || "normal";
 
 		let filterAlign = function(align) {
 			return /^(left|center|right|justify)$/.test(align) ? align : 'left';
 		}
 
-		// if (obj.whiteSpace && obj.whiteSpace === 'normal') {
-		// 	console.log(obj.content);
-
-		// 	let ss = [];
-
-		// 	for (let i of obj.content) {
-		// 		for (let ii of i) {
-		// 			if (typeof width === 'object') {
-						
-		// 			}
-		// 		}
-		// 	}
-		// }
-
 		if (typeof width === 'number') {
 			// 单元格宽度
 			listWidth  = Math.floor(width / colspan);
 			// 分栏余数; 12%2 = 2  _____+++++==
-			remainderVal = Math.floor(width % colspan);			
+			remainderVal = Math.floor(width % colspan);
+
+			width = [];
+			for (let i = 0; i < colspan; i++) {
+
+				if (i == colspan -1) listWidth += remainderVal;
+
+				width.push(listWidth)
+			}	
+		}
+
+		if (obj.whiteSpace && obj.whiteSpace === 'normal') {
+			arrayFormat(obj.content, width);
 		}
 		
 		// 过滤 align
@@ -136,7 +137,10 @@ const logs = {
 							listWidth = width[i]
 						}
 
-						listHTML += positionStr( textOverflow(val, listWidth), _align, '', listWidth);
+						// 对隐藏文字时，截取
+						if (obj.whiteSpace === "nowrap") val = textOverflow(val, listWidth);
+
+						listHTML += positionStr( val, _align, '', listWidth);
 					}
 					
 				}
@@ -211,34 +215,39 @@ function getStrLen(str) {
 function textOverflow(str, len) {
 	// 文字过长隐藏
 	if (getStrLen(str) > len) {
-		str = substrs(str, len - 4) + '...';
+		str = substrs(str, 0, len - 4) + '...';
 	}
 	return str;
 }
 
 
-function substrs(str, len) {
+function substrs(str, start, len) {
 	let result = '';
 	let _len = 0;
+	len = len || getStrLen(str);
+	start = start || 0;
 
 	for (let val of str) {
-		if (/[^x00-\xff]/.test(val)) {
+		// 中文或 , ? * & $ - +
+		if (/[^x00-\xff,?*&$\-+]/.test(val)) {
 			_len += 2;
 		} else {
 			_len += 1;
 		}
 
 		if (_len <= len) {
-			result += val;
+
+			if (_len > start) result += val;
 		}
 		else {
 			break
 		}
 
 	}
-// console.log(result, len)
+
 	return result;
 }
+
 
 /*
 	输出效果
@@ -290,5 +299,110 @@ function positionStr(str, align, sign, width) {
 }
 
 
+function arrayFormat(arr, width) {
+		// 临时存储数组
+	var willMake = [];
+
+	// 所有超出数组集
+	var b = [];
+
+	// 找到数组之中超出的内容
+	for (let i = 0; i < arr.length; i++) {
+
+		for (let x = 0; x < width.length; x++) {
+			
+			if (arr[i][x].length > width[x]) {
+				// console.error(arr[i][x], x, i);
+				b.push(i)
+				break;
+
+			}
+
+		}
+	}
+	// 打印一下看看 @_@
+	// console.log(b)
+
+	// 对所有超出的内容处理
+	for ( let i of b) {
+		let str =  arr[i];
+		// 内容每个倍数数组
+		let maxLine = [];
+
+		// str 是具体的单个数组内容
+		// 如 i 是 0 时, 内容是：
+		// [ "algin ", "对齐方式,可选 left,center,right,justify; 或使用数组" ]
+		str.forEach(function(val, index) {
+			// 我们再看看信息 @_@
+			// console.log(val, index, Math.ceil(val.length / width[index]) );
+
+			// 对数组内数据与宽度一一对比,计算它们的倍数
+			maxLine.push( Math.ceil( getStrLen(val) / width[index]) )
+
+			// 最后.我们找到最大的倍数,也就是我们要生成多少个新的数组
+			if (index == str.length -1) {
+				// 获取最大的数组
+				let toMakeArr = Math.max.apply(null, maxLine);
+
+				// 拆分之后的数组
+				let cArr = [];
+				
+				for (let arr = 0; arr < toMakeArr; arr++) {
+					cArr[arr] = [];
+
+					width.forEach(function(val2, index2) {
+						// ['align', '对齐方式,可选 left,ce'] 
+						// => arr = 0,第一行,放入对应的宽度字符
+
+						// ['', 'nter,right,just']
+						// ['','ify; 或使用数组']
+						// cArr[arr][index2] = str[index2].substr(arr*val2, val2)
+						cArr[arr][index2] = substrs(str[index2], arr*val2, val2)
+					})
+				}
+
+				// 最后；我们把他们保存到最后处理的数据之中
+				willMake.push({
+					arr: cArr, // 新数组
+					index: i // 这是当前数据在原数组中的 index
+				})
+			}
+			
+		});
+
+
+	}
+
+
+	// 偏移量，这是因为当有数组被追加到之前的数组之后，新加了个数，导致了偏移
+	let offset = 0;
+
+	// 对所有生成好的数组进行添加工作
+	for (let wVal = 0; wVal < willMake.length; wVal++) {
+
+		// 偏移量
+		if (wVal != 0) offset += willMake[wVal - 1].arr.length - 1;
+
+		willMake[wVal].arr.forEach(function(val, i) {
+			let newIndex = willMake[wVal].index + i + offset;
+
+			if (newIndex < arr.length) {
+				// 定义要删除的老数据
+				let delIndex = 0;
+				
+				// 只有在0的时候，我们替换之前的数组，其它情况只加
+				if (i == 0) delIndex = 1;
+
+				arr.splice(newIndex, delIndex, val);
+
+			} else {
+				console.log('Too long')
+				arr.push(val)
+			}
+		})
+	}
+
+	return arr;
+}
 
 module.exports = logs;
