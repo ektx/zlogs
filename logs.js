@@ -221,29 +221,68 @@ function textOverflow(str, len) {
 }
 
 
+
+/* 
+	字符串截取
+	----------------------------------------
+	支持中文的截取
+
+	@str 截取字符串
+	@start 开始位置
+	@len 截取长度
+*/ 
 function substrs(str, start, len) {
+
 	let result = '';
-	let _len = 0;
-	len = len || getStrLen(str);
+	let strLen = getStrLen(str);
+
+	len = len || strLen;
 	start = start || 0;
 
-	for (let val of str) {
-		// 中文或 , ? * & $ - +
-		if (/[^x00-\xff,?*&$\-+]/.test(val)) {
-			_len += 2;
-		} else {
-			_len += 1;
+
+	for (let i = 0; i < strLen; i++) {
+
+		if (i >= start + len) {
+			// console.log('OVER');
+			break;
 		}
 
-		if (_len <= len) {
+		// 小于截取内容时
+		if (i < start) {
 
-			if (_len > start) result += val;
-		}
+			// 如果是中文,全角字符，在不输出时，全部格式成 __
+			if ( /[^x00-\xff,?*&$\-+\s]/.test( str[i] ) ) {
+				i++;
+				str = str.replace(/[^\x00-\xff]/, '__');
+
+				// i++ 之后是否已经超出了截取的限制
+				// 超出则停止
+				if (i > start + len) {
+					console.log('add will OVER');
+					break;
+				}
+			}
+			
+		} 
+		// 开始截取
 		else {
-			break
+
+			// 对中文，我们加上一个字符，路过这个词
+			if ( /[^x00-\xff,?*&$\-+\s]/.test( str[i] ) ) {
+				str = '_' + str;
+				i++;
+				result += str[i]
+				
+			} 
+			// 非中文添加
+			else {
+				result += str[i]
+			}
+			
 		}
 
 	}
+
 
 	return result;
 }
