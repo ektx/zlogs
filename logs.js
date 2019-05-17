@@ -6,31 +6,21 @@
 
 const logs = {
 
-	head : function(obj) {
-		obj.width = obj.width || 20;
-		obj.sign  = obj.sign || '=';
-		let html  = '';
-
-		// 过滤 text
-		if (!obj.title) {
-			obj.title = {
-				content: "logs",
-				align: "left",
-				// inset || above
-				decoration: "inset"
-			}
-		} else {
-			obj.title.content = obj.title.content || "logs";
-			obj.title.align = obj.title.align || "center";
-			obj.title.decoration = obj.title.decoration || "inset";
-		}
-
-		console.log( output (obj) )
-
-		return this;
-
+	options: {
+		textAlign: 'left',
+		width: 50,
+		colspan: [ '100%' ]
 	},
 
+	option (obj = {}) {
+		this.option = Object.assign(this.options, obj)
+		console.log( this.option )
+		return this
+	},
+
+	show (obj) {
+		console.log(obj, this.option)
+	},
 	/*
 	.list({
 		content: [ 
@@ -444,4 +434,4 @@ function arrayFormat(arr, width) {
 	return arr;
 }
 
-module.exports = logs;
+module.exports = logs

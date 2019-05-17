@@ -76,81 +76,20 @@ var logs = require('./logs');
 // 	width: 60
 // })
 
-logs.list({
-	content: [ 
-		[ "content", "列表内容，数组形式"  ],
-		[ "title", "标题" ],
-		[ "algin", "对齐方式,可选 left,center,right,justify; 或使用数组" ],
-		[ "width", "总列表宽度, number || array" ],
-		[ "colspan", "分列数量" ]
-	],
-	title: ['List 说明'],
-	align: 'justify',
-	whiteSpace: 'nowrap',
-	width: 60
-});
-
-logs.list({
-	content: [ 
-		[ "content", "列表内容，数组形式"  ],
-		[ "title", "标题" ],
-		[ "algin", "对齐方式,可选 left,center,right,justify; 或使用数组" ],
-		[ "width", "总列表宽度, number || array" ],
-		[ "colspan", "分列数量" ]
-	],
-	title: ['List 说明'],
-	whiteSpace: 'normal',
-	align: 'justify',
-	width: 60
+logs
+.option({
+	colspan: [20]
 })
-
-// logs.head({
-// 	title: {
-// 		content: "LOGS 0.0.1",
-// 		align: "center",
-// 		decoration: "inset"
-// 	},
-// 	subTitle: {
-// 		content: "ektx <530675800@qq.com>",
-// 		align: "center"
-// 	},
-// 	width: 60,
-// 	sign: '='
-// }).list({
-// 	content: [ 
-// 		[ "content ", "列表内容，数组形式"  ],
-// 		[ "title ", "标题" ],
-// 		[ "algin ", "对齐方式,可选 left,center,right,justify; 或使用数组" ],
-// 		[ "width ", "总列表宽度, number || array" ],
-// 		[ "colspan ", "分列数量" ]
-// 	],
-// 	title: ['List 说明'],
-// 	align: ['center', 'left'],
-// 	width: [15, 45]
-// })
-
-// logs.list({
-// 	content: [ 
-// 		[ "content ", "列表内容，数组形式"  ],
-// 		[ "title ", "标题" ],
-// 		[ "algin ", "对齐方式,可选 left,center,right,justify; 或使用数组" ],
-// 		[ "width ", "总列表宽度, number || array" ],
-// 		[ "colspan ", "分列数量" ]
-// 	],
-// 	title: ['List 说明'],
-// 	align: ['center', 'left'],
-// 	whiteSpace: 'normal',
-// 	width: [15, 45]
-// }).head({
-// 	title: {
-// 		content: "LOGS 0.0.1",
-// 		align: "center",
-// 		decoration: "inset"
-// 	},
-// 	subTitle: {
-// 		content: "ektx <530675800@qq.com>",
-// 		align: "center"
-// 	},
-// 	width: 60,
-// 	sign: '-'
-// })
+.show([
+	['zlogs'],
+	['version', 'v 0.0.1'],
+])
+.option()
+.show([
+	['Use'],
+	['hello world', 'For guide and recipes on how to configure / customize this project,check out the vue-cli documentation.']
+])
+.show([
+	['怎么使用'],
+	['首先：', '我们也不知道啊，要不你自己看看了']
+])
